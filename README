@@ -1,5 +1,8 @@
-A sample for the Typesafe Stack (http://typesafe.com/stack).
 
-Scala sample project using Scala and SBT.
+cd <NOT-HERE>
+git clone https://github.com/Sanoma-CDA/maxmind-geoip2-scala.git
+sbt +publish-local
 
-To run and test it use SBT invoke: 'sbt run'
+cd <HERE>
+sbt run
+

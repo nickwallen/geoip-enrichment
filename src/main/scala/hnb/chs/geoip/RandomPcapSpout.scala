@@ -30,9 +30,8 @@ class RandomPcapSpout extends BaseRichSpout {
   }
 
   def randomIp() = {
-//    val octets = Seq.fill(4)(Random.nextInt(256))
-//    octets.mkString(".")
-    "123.123.123.123"
+    val octets = Seq.fill(4)(Random.nextInt(256))
+    octets.mkString(".")
   }
   
 }

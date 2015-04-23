@@ -1,0 +1,98 @@
+
+ digraph PcapStormTopology {
+	
+		rankdir=LR;
+    node [shape=box,style=filled,fillcolor="#C0D0C0"];
+
+		// primary pcap capture
+		"Pcap Queue" -> "Tagger" [label=" (pcap)"];
+		"Tagger" -> "Json Transform";
+
+		// master data
+		subgraph clusterMasterData {
+			label="Master Data"; style=filled; bgcolor="#D0C0A0";
+			"Pcap Export";
+		};
+
+		"Json Transform" -> "Pcap Export" [label=" (uuid,json)"];
+		"Pcap Export" -> "Pcap Store";
+
+		// layer2/3 entity resolution
+		subgraph clusterMacIP {
+			label="Layer 2/3 Resolution"; style=filled; bgcolor="#D0C0A0";
+			"Extract IP/MAC";
+			"Export IP/MAC";
+		};
+
+		"Json Transform" -> "Extract IP/MAC" [label=" (uuid,json)"];
+		"Extract IP/MAC" -> "Export IP/MAC" [label=" (uuid,ip,mac)"];
+		"Export IP/MAC" -> "Resolution Store";
+
+		// ip enrichment
+    subgraph clusterIPEnrichment {
+			label="IP Enrichment"; style=filled; bgcolor="#D0C0A0";
+			"Extract IP";
+
+			"GeoIP City";
+			"City Export";
+
+			"GeoIP Anon";
+			"Anon Export";
+
+			"GeoIP ISP";
+			"ISP Export";
+
+			"GeoIP Domain";
+			"Domain Export";
+
+			"GeoIP Conn";
+			"Conn Export";
+    };
+
+		"Json Transform" -> "Extract IP" [label=" (uuid,json)"];
+
+		// city
+		"Extract IP" -> "GeoIP City" [label="(uuid, ip)"];
+		"GeoIP City" -> "City Export" [label="(uuid,ip,city)"];
+		"City Export" -> "IP Store";
+
+		// anon
+		"Extract IP" -> "GeoIP Anon" [label="(uuid, ip)"];
+		"GeoIP Anon" -> "Anon Export" [label="(uuid,ip,anon)"];
+		"Anon Export" -> "IP Store";
+
+		// isp
+		"Extract IP" -> "GeoIP ISP" [label="(uuid, ip)"];
+		"GeoIP ISP" -> "ISP Export" [label="(uuid,ip,isp)"];
+		"ISP Export" -> "IP Store";
+
+		// domain
+		"Extract IP" -> "GeoIP Domain" [label="(uuid, ip)"];
+		"GeoIP Domain" -> "Domain Export" [label="(uuid,ip,domain)"];
+		"Domain Export" -> "IP Store";
+
+		// connection
+		"Extract IP" -> "GeoIP Conn" [label="(uuid, ip)"];
+		"GeoIP Conn" -> "Conn Export" [label="(uuid,ip,conn)"];
+		"Conn Export" -> "IP Store";
+		
+		// hbase
+		subgraph clusterHbase {
+			label="HBase"; style=filled; bgcolor="#D0C0A0";
+			"IP Store";
+			"Resolution Store";
+			"Pcap Store";
+			"Tracker Store";
+		};
+
+		// statistics
+		subgraph clusterTracker {
+			rankdir=LR; label="Tracker"; style=filled; bgcolor="#D0C0A0";
+			"Tracker";
+			"Export Stats";
+		};
+
+		"Tagger" -> "Tracker" [label=" (uuid, pcap)"];
+		"Tracker" -> "Export Stats" [label=" (stats)"];
+		"Export Stats" -> "Tracker Store" [shape=box];
+ }

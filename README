@@ -1,8 +1,13 @@
 
-cd <NOT-HERE>
-git clone https://github.com/Sanoma-CDA/maxmind-geoip2-scala.git
-sbt +publish-local
+### Storm Pcap Topology
 
-cd <HERE>
-sbt run
+![Topology](docs/pcap-storm-topology.png)
+
+### Maxmind Scala Library
+
+Install the library in your local repository.
+
+    git clone https://github.com/Sanoma-CDA/maxmind-geoip2-scala.git
+    cd maxmind-geoip2-scala
+    sbt +publish-local
 

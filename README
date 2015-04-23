@@ -1,7 +1,7 @@
 
 ### Storm Pcap Topology
 
-![Topology](docs/pcap-storm-topology.png?raw=true)
+![Topology](/docs/pcap-storm-topology.png)
 
 ### Maxmind Scala Library
 
